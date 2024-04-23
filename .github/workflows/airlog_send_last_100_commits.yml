@@ -21,6 +21,7 @@ jobs:
               if [ -z "$log" ]; then
                 break
               fi
+              echo "testing!"
               echo "$log" | base64 > "gitlog_base64_$idx.txt"
             done
 
@@ -33,19 +34,13 @@ jobs:
                 break
               fi
               ENCODED_LOG=$(cat "gitlog_base64_$idx.txt")
+              JSON_PAYLOAD=$(jq -n \
+                --arg diff "$ENCODED_LOG" \
+                --argjson event "$GITHUB_EVENT" \
+                '{diff: $diff, event: $event}')
 
-              echo ENCODED_LOG
-
-              # Write the JSON data to a file
-              echo "{\"diff\": \"$ENCODED_LOG\"}" > json_payload_$idx.json
-
-              echo "NINJA"
-
-              # Read the file with jq to properly format it
-              JSON_PAYLOAD=$(jq . json_payload_$idx.json)
               echo "JSON_PAYLOAD: $JSON_PAYLOAD"
-
               curl -X POST -H "Content-Type: application/json" \
               -H "Authorization: Bearer f654da:u3b7yCitMe8nRhRpsF6l" \
-              -d @json_payload_$idx.json "https://056b-213-66-90-230.ngrok-free.app/webhooks/github_actions"
+              -d "$JSON_PAYLOAD" "https://056b-213-66-90-230.ngrok-free.app/webhooks/github_actions"
             done
