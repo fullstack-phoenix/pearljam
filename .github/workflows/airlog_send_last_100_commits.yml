@@ -34,8 +34,12 @@ jobs:
               fi
               ENCODED_LOG=$(cat "gitlog_base64_$idx.txt")
 
+              echo ENCODED_LOG
+
               # Write the JSON data to a file
               echo "{\"diff\": \"$ENCODED_LOG\"}" > json_payload_$idx.json
+
+              echo "NINJA"
 
               # Read the file with jq to properly format it
               JSON_PAYLOAD=$(jq . json_payload_$idx.json)
