@@ -1,0 +1,49 @@
+name: Airlog Send Last 100 Commit Messages
+on:
+  workflow_dispatch:  # Allows manual trigger
+jobs:
+    get-last-100-commit-messages:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+
+        - name: Get last 100 commit logs, Base64 encode, and write to file
+          run: |
+            skip=0
+            count=2
+            for i in {1..2}; do
+              log=$(git log --skip=$skip --max-count=$count -p --no-merges --stat --format="§§§§%H§§%ad§§%B" --date=format:"%Y-%m-%dT%H:%M:%SZ")
+              if [ -z "$log" ]; then
+                break
+              fi
+              echo "testing!"
+              echo "$log" | base64 > "gitlog_base64_$skip.txt"
+              skip=$((skip + count))
+            done
+
+        - name: Read encoded log and trigger webhook
+          env:
+            GITHUB_EVENT: ${{ toJson(github.event.commits[0]) }}
+          run: |
+            skip=0
+            count=2
+            for i in {1..2}; do
+              if [ ! -f "gitlog_base64_$skip.txt" ]; then
+                break
+              fi
+              ENCODED_LOG=$(cat "gitlog_base64_$skip.txt")
+              JSON_PAYLOAD=$(jq -n \
+                --arg diff "$ENCODED_LOG" \
+                --argjson event "$GITHUB_EVENT" \
+                '{diff: $diff, event: $event}')
+
+              echo "JSON_PAYLOAD: $JSON_PAYLOAD"
+              curl -X POST -H "Content-Type: application/json" \
+              -H "Authorization: Bearer f654da:u3b7yCitMe8nRhRpsF6l" \
+              -d "$JSON_PAYLOAD" "https://056b-213-66-90-230.ngrok-free.app/webhooks/github_actions"
+              skip=$((skip + count))
+            done
