@@ -11,12 +11,15 @@ jobs:
           with:
             fetch-depth: 0
 
-        - name: Get last 100 commit logs, Base64 encode, and write to file
+        - name: Get last 20 commit logs, Base64 encode, and write to file
           run: |
             skip=0
             count=2
-            for i in {1..2}; do
-              log=$(git log --skip=$skip --max-count=$count -p --no-merges --stat --format="§§§§%H§§%ad§§%B" --date=format:"%Y-%m-%dT%H:%M:%SZ")
+            for i in {1..4}; do
+              log=$(git log --skip=$skip --max-count=$count -p --no-merges --stat \
+                --format="§§§§%H§§%ad§§%B" \
+                --date=format:"%Y-%m-%dT%H:%M:%SZ" \
+                -- . ':(exclude).github')
               if [ -z "$log" ]; then
                 break
               fi
@@ -30,8 +33,8 @@ jobs:
             GITHUB_EVENT: ${{ toJson(github.event.commits[0]) }}
           run: |
             skip=0
-            count=2
-            for i in {1..2}; do
+            count=4
+            for i in {1..4}; do
               if [ ! -f "gitlog_base64_$skip.txt" ]; then
                 break
               fi
