@@ -14,7 +14,7 @@ jobs:
         - name: Get last 20 commit logs, Base64 encode, and write to file
           run: |
             skip=0
-            count=2
+            count=4
             for i in {1..4}; do
               log=$(git log --skip=$skip --max-count=$count -p --no-merges --stat \
                 --format="§§§§%H§§%ad§§%B" \
