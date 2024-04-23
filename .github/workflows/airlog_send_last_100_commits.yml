@@ -13,10 +13,8 @@ jobs:
 
         - name: Get last 20 commit logs, Base64 encode, and write to file
           run: |
-            skip=0
-            count=4
-            for i in {1..4}; do
-              log=$(git log --skip=$skip --max-count=$count -p --no-merges --stat \
+            for idx in {1..4}; do
+              log=$(git log --skip=$idx --max-count=1 -p --no-merges --stat \
                 --format="§§§§%H§§%ad§§%B" \
                 --date=format:"%Y-%m-%dT%H:%M:%SZ" \
                 -- . ':(exclude).github')
@@ -24,22 +22,19 @@ jobs:
                 break
               fi
               echo "testing!"
-              echo "$log" | base64 > "gitlog_base64_$skip.txt"
-              skip=$((skip + count))
+              echo "$log" | base64 > "gitlog_base64_$idx.txt"
             done
 
         - name: Read encoded log and trigger webhook
           env:
             GITHUB_EVENT: ${{ toJson(github.event.commits[0]) }}
           run: |
-            skip=0
-            count=4
-            for i in {1..4}; do
-              if [ ! -f "gitlog_base64_$skip.txt" ]; then
+            for idx in {1..4}; do
+              if [ ! -f "gitlog_base64_$idx.txt" ]; then
                 break
               fi
-              echo "gitlog_base64_$skip.txt"
-              ENCODED_LOG=$(cat "gitlog_base64_$skip.txt")
+              echo "gitlog_base64_$idx.txt"
+              ENCODED_LOG=$(cat "gitlog_base64_$idx.txt")
               JSON_PAYLOAD=$(jq -n \
                 --arg diff "$ENCODED_LOG" \
                 --argjson event "$GITHUB_EVENT" \
@@ -49,5 +44,4 @@ jobs:
               curl -X POST -H "Content-Type: application/json" \
               -H "Authorization: Bearer f654da:u3b7yCitMe8nRhRpsF6l" \
               -d "$JSON_PAYLOAD" "https://056b-213-66-90-230.ngrok-free.app/webhooks/github_actions"
-              skip=$((skip + count))
             done
