@@ -39,7 +39,7 @@ jobs:
                 break
               fi
               ENCODED_LOG=$(cat "gitlog_base64_$skip.txt")
-              JSON_PAYLOAD=$(jq -n \
+              JSON_PAYLOAD=$(jq -n --slurpfile \
                 --arg diff "$ENCODED_LOG" \
                 --argjson event "$GITHUB_EVENT" \
                 '{diff: $diff, event: $event}')
