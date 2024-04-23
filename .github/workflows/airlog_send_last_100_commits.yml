@@ -38,7 +38,7 @@ jobs:
               echo "{\"diff\": \"$ENCODED_LOG\", \"event\": $GITHUB_EVENT}" > json_payload_$idx.json
 
               # Read the file with jq to properly format it
-              JSON_PAYLOAD=$(jq . json_payload_$skip.json)
+              JSON_PAYLOAD=$(jq . json_payload_$idx.json)
               echo "JSON_PAYLOAD: $JSON_PAYLOAD"
 
               curl -X POST -H "Content-Type: application/json" \
