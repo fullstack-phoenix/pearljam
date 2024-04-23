@@ -21,7 +21,6 @@ jobs:
               if [ -z "$log" ]; then
                 break
               fi
-              echo "testing!"
               echo "$log" | base64 > "gitlog_base64_$idx.txt"
             done
 
@@ -29,21 +28,22 @@ jobs:
           env:
             GITHUB_EVENT: ${{ toJson(github.event.commits[0]) }}
           run: |
-            count = $(git rev-list --count --all)
-            count = count - 1
+            count=$(git rev-list --count --all)
+            count=$((count - 1))
             echo "$count"
 
             for idx in {1..4}; do
               if [ ! -f "gitlog_base64_$idx.txt" ]; then
                 break
               fi
+
               ENCODED_LOG=$(cat "gitlog_base64_$idx.txt")
+
               JSON_PAYLOAD=$(jq -n \
                 --arg diff "$ENCODED_LOG" \
                 --argjson event "$GITHUB_EVENT" \
                 '{diff: $diff, event: $event}')
 
-              echo "JSON_PAYLOAD: $JSON_PAYLOAD"
               curl -X POST -H "Content-Type: application/json" \
               -H "Authorization: Bearer f654da:u3b7yCitMe8nRhRpsF6l" \
               -d "$JSON_PAYLOAD" "https://056b-213-66-90-230.ngrok-free.app/webhooks/github_actions"
