@@ -29,6 +29,10 @@ jobs:
           env:
             GITHUB_EVENT: ${{ toJson(github.event.commits[0]) }}
           run: |
+            count = $(git rev-list --count --all)
+            count = count - 1
+            echo "$count"
+
             for idx in {1..4}; do
               if [ ! -f "gitlog_base64_$idx.txt" ]; then
                 break
