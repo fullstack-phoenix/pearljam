@@ -35,7 +35,7 @@ jobs:
               ENCODED_LOG=$(cat "gitlog_base64_$idx.txt")
 
               # Write the JSON data to a file
-              echo "{\"diff\": \"$ENCODED_LOG\", \"event\": $GITHUB_EVENT}" > json_payload_$idx.json
+              echo "{\"diff\": \"$ENCODED_LOG\"}" > json_payload_$idx.json
 
               # Read the file with jq to properly format it
               JSON_PAYLOAD=$(jq . json_payload_$idx.json)
