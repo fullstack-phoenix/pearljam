@@ -16,7 +16,7 @@ jobs:
             # count=$(git rev-list --count --all --no-merges  -- . ':(exclude).github')
             # count=$((count - 1))
 
-            for idx in {0..20}; do
+            for idx in {0..1}; do
               log=$(git log --skip=$idx --max-count=1 -p --no-merges --stat \
                 --format="§§§§%H§§%ad§§%B" \
                 --date=format:"%Y-%m-%dT%H:%M:%SZ" \
@@ -34,12 +34,13 @@ jobs:
             # count=$(git rev-list --count --all --no-merges  -- . ':(exclude).github')
             # count=$((count - 1))
 
-            for idx in {0..20}; do
+            for idx in {0..1}; do
               if [ ! -f "gitlog_base64_$idx.txt" ]; then
                 break
               fi
 
               ENCODED_LOG=$(cat "gitlog_base64_$idx.txt")
+              echo "$ENCODED_LOG"
 
               # printf '{"diff": "%s"}' "$ENCODED_LOG" > payload.json
               printf '{"diff": "%s"}' "ninja" > payload.json
@@ -52,5 +53,5 @@ jobs:
 
               curl -X POST -H "Content-Type: application/json" \
               -H "Authorization: Bearer f654da:u3b7yCitMe8nRhRpsF6l" \
-              -d "$JSON_PAYLOAD" "https://056b-213-66-90-230.ngrok-free.app/webhooks/github_actions"
+              -d "$JSON_PAYLOAD" "https://016e-213-66-90-230.ngrok-free.app/webhooks/github_actions"
             done
