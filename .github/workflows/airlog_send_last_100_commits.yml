@@ -40,11 +40,17 @@ jobs:
               fi
 
               ENCODED_LOG=$(cat "gitlog_base64_$idx.txt")
-              echo "$ENCODED_LOG"
+              # echo "$ENCODED_LOG"
 
-              printf '{"diff": "%s"}' "$ENCODED_LOG" > payload.json
+              # Create a JSON file with the Base64 data embedded using jq
+              echo "$ENCODED_LOG" | jq -R --slurp '{diff: .}' > payload.json
+
+              # Now merge this JSON with the GitHub event JSON
+              echo $GITHUB_EVENT | jq --slurpfile payload payload.json '. + {"event": .}' > final_payload.json
+
+              # printf '{"diff": "%s"}' "$ENCODED_LOG" > payload.json
               # printf '{"diff": "%s"}' "ninja" > payload.json
-              JSON_PAYLOAD=$(jq . payload.json)
+              # JSON_PAYLOAD=$(jq . payload.json)
 
               # JSON_PAYLOAD=$(jq -n \
               #   --arg diff "$ENCODED_LOG" \
