@@ -16,7 +16,7 @@ jobs:
             # count=$(git rev-list --count --all --no-merges  -- . ':(exclude).github')
             # count=$((count - 1))
 
-            for idx in {0..1}; do
+            for idx in {0..20}; do
               log=$(git log --skip=$idx --max-count=1 -p --no-merges --stat \
                 --format="§§§§%H§§%ad§§%B" \
                 --date=format:"%Y-%m-%dT%H:%M:%SZ" \
@@ -34,7 +34,7 @@ jobs:
             # count=$(git rev-list --count --all --no-merges  -- . ':(exclude).github')
             # count=$((count - 1))
 
-            for idx in {0..1}; do
+            for idx in {0..20}; do
               if [ ! -f "gitlog_base64_$idx.txt" ]; then
                 break
               fi
