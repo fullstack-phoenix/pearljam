@@ -46,16 +46,14 @@ jobs:
 
               echo $(cat payload.txt)
 
-              cat <<- EOF > payload.json
-              {
-                "diff": "$ENCODED_LOG"
-              }
-              EOF
-
-              # Use jq to read from file, ensuring proper parsing and escaping
-              JSON_PAYLOAD=$(jq . payload.json)
-
-              curl -X POST -H "Content-Type: application/json" \
-              -H "Authorization: Bearer f654da:u3b7yCitMe8nRhRpsF6l" \
-              -d "$JSON_PAYLOAD" "https://016e-213-66-90-230.ngrok-free.app/webhooks/github_actions"
+              # cat <<- EOF > payload.json
+              # {}
+              # EOF
+              #
+              # # Use jq to read from file, ensuring proper parsing and escaping
+              # JSON_PAYLOAD=$(jq . payload.json)
+              #
+              # curl -X POST -H "Content-Type: application/json" \
+              # -H "Authorization: Bearer f654da:u3b7yCitMe8nRhRpsF6l" \
+              # -d "$JSON_PAYLOAD" "https://016e-213-66-90-230.ngrok-free.app/webhooks/github_actions"
             done
