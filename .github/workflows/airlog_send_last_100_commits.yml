@@ -50,7 +50,7 @@ jobs:
 
               # printf '{"diff": "%s"}' "$ENCODED_LOG" > payload.json
               # printf '{"diff": "%s"}' "ninja" > payload.json
-              # JSON_PAYLOAD=$(jq . payload.json)
+              JSON_PAYLOAD=$(jq . payload.json)
 
               # JSON_PAYLOAD=$(jq -n \
               #   --arg diff "$ENCODED_LOG" \
