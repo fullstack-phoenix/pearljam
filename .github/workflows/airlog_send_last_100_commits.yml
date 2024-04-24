@@ -40,7 +40,7 @@ jobs:
               ENCODED_LOG=$(cat "gitlog_base64_$idx.txt")
 
               # Create a JSON file using heredoc to properly manage new lines and escaping
-              cat > payload.json <<-EOF
+              cat << EOF > payload.json
               {
                 "diff": "$ENCODED_LOG"
               }
