@@ -28,8 +28,6 @@ jobs:
             done
 
         - name: Read encoded log and trigger webhook
-          env:
-            GITHUB_EVENT: ${{ toJson(github.event.commits[0]) }}
           run: |
             # count=$(git rev-list --count --all --no-merges  -- . ':(exclude).github')
             # count=$((count - 1))
@@ -41,12 +39,17 @@ jobs:
 
               ENCODED_LOG=$(cat "gitlog_base64_$idx.txt")
 
-              JSON_PAYLOAD=$(jq -n \
-                --arg diff "$ENCODED_LOG" \
-                --argjson event "$GITHUB_EVENT" \
-                '{diff: $diff, event: $event}')
+              # Create a JSON file using heredoc to properly manage new lines and escaping
+              cat > payload.json <<EOF
+              {
+                "diff": "$ENCODED_LOG"
+              }
+              EOF
+
+              # Use jq to read from file, ensuring proper parsing and escaping
+              JSON_PAYLOAD=$(jq . payload.json)
 
               curl -X POST -H "Content-Type: application/json" \
               -H "Authorization: Bearer f654da:u3b7yCitMe8nRhRpsF6l" \
-              -d "$JSON_PAYLOAD" "https://056b-213-66-90-230.ngrok-free.app/webhooks/github_actions"
+              -d "$JSON_PAYLOAD" "https://016e-213-66-90-230.ngrok-free.app/webhooks/github_actions"
             done
