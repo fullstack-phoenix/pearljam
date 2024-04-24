@@ -40,11 +40,11 @@ jobs:
               ENCODED_LOG=$(cat "gitlog_base64_$idx.txt")
 
               # Create a JSON file using heredoc to properly manage new lines and escaping
-              cat <<- EOF > payload.txt
+              a = $(cat <<EOF
               The current working directory is: $PWD
-              EOF
+              EOF)
 
-              echo $(cat payload.txt)
+              echo ${a}
 
               # cat <<- EOF > payload.json
               # {}
