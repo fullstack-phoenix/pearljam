@@ -44,7 +44,7 @@ jobs:
               {
                 "diff": "$ENCODED_LOG"
               }
-EOF
+              EOF
 
               echo $(cat payload.json)
 
