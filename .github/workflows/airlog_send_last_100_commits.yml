@@ -41,17 +41,13 @@ jobs:
 
               ENCODED_LOG=$(cat "gitlog_base64_$idx.txt")
 
-              MY_STRING=$(cat << EOF
-              first line
-              second line
-              third line
-              EOF
-              )
+              printf '{"diff": "%s"}' "$ENCODED_LOG" "$GITHUB_EVENT" > payload.json
+              JSON_PAYLOAD=$(jq . payload.json)
 
-              JSON_PAYLOAD=$(jq -n \
-                --arg diff "$ENCODED_LOG" \
-                --argjson event "$GITHUB_EVENT" \
-                '{diff: $diff, event: $event}')
+              # JSON_PAYLOAD=$(jq -n \
+              #   --arg diff "$ENCODED_LOG" \
+              #   --argjson event "$GITHUB_EVENT" \
+              #   '{diff: $diff, event: $event}')
 
               curl -X POST -H "Content-Type: application/json" \
               -H "Authorization: Bearer f654da:u3b7yCitMe8nRhRpsF6l" \
