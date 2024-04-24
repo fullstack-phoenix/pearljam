@@ -41,7 +41,8 @@ jobs:
 
               ENCODED_LOG=$(cat "gitlog_base64_$idx.txt")
 
-              printf '{"diff": "%s"}' "$ENCODED_LOG" "$GITHUB_EVENT" > payload.json
+              # printf '{"diff": "%s"}' "$ENCODED_LOG" > payload.json
+              printf '{"diff": "%s"}' "ninja" > payload.json
               JSON_PAYLOAD=$(jq . payload.json)
 
               # JSON_PAYLOAD=$(jq -n \
