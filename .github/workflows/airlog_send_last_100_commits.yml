@@ -42,7 +42,8 @@ jobs:
               # Create a JSON file using heredoc to properly manage new lines and escaping
               a = $(cat <<EOF
               The current working directory is: $PWD
-              EOF)
+              EOF
+              )
 
               echo ${a}
 
