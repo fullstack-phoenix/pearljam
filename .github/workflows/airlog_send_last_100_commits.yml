@@ -41,7 +41,7 @@ jobs:
 
               # Create a JSON file using heredoc to properly manage new lines and escaping
               cat <<- EOF > payload.txt
-              "$ENCODED_LOG"
+              The current working directory is: $PWD
               EOF
 
               echo $(cat payload.txt)
