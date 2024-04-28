@@ -1,4 +1,4 @@
-name: Airlog Send Last 100 Commit Messages
+name: Airlog Send Commit Messages
 on:
   workflow_dispatch:  # Allows manual trigger
 jobs:
@@ -13,10 +13,7 @@ jobs:
 
         - name: Get last 20 commit logs, Base64 encode, and write to file
           run: |
-            # count=$(git rev-list --count --all --no-merges  -- . ':(exclude).github')
-            # count=$((count - 1))
-
-            for idx in {0..20}; do
+            for idx in {0..2}; do
               log=$(git log --skip=$idx --max-count=1 -p --no-merges --stat \
                 --format="§§§§%H§§%ad§§%B" \
                 --date=format:"%Y-%m-%dT%H:%M:%SZ" \
@@ -28,35 +25,16 @@ jobs:
             done
 
         - name: Read encoded log and trigger webhook
-          env:
-            GITHUB_EVENT: ${{ toJson(github.event.commits[0]) }}
           run: |
-            # count=$(git rev-list --count --all --no-merges  -- . ':(exclude).github')
-            # count=$((count - 1))
-
-            for idx in {0..20}; do
+            for idx in {0..2}; do
               if [ ! -f "gitlog_base64_$idx.txt" ]; then
                 break
               fi
 
               ENCODED_LOG=$(cat "gitlog_base64_$idx.txt")
-              # echo "$ENCODED_LOG"
-
-              # Create a JSON file with the Base64 data embedded using jq
-              # echo "$ENCODED_LOG" | jq -R --slurp '{diff: .}' > payload.json
-
-              # Now merge this JSON with the GitHub event JSON
-              # echo $GITHUB_EVENT | jq --slurpfile payload payload.json '. + {"event": .}' > final_payload.json
-
-              # JSON_PAYLOAD=$(jq . payload.json)
-
-              # JSON_PAYLOAD=$(jq -n \
-              #   --arg diff "$ENCODED_LOG" \
-              #   --argjson event "$GITHUB_EVENT" \
-              #   '{diff: $diff, event: $event}')
 
               curl -X POST -H "Content-Type: text/plain" \
               -H "Authorization: Bearer f654da:u3b7yCitMe8nRhRpsF6l" \
               --data-binary "@gitlog_base64_$idx.txt" \
-              "https://46bf-213-66-90-230.ngrok-free.app/webhooks/github_actions"
+              "https://7d70-213-66-90-230.ngrok-free.app/webhooks/github_actions"
             done
